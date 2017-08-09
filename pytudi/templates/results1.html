@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+{% block results %}
+
+        <strong><br /><span style="color: #B43104"><h5>{{ word_laban }} :  {{ data_laban }}</h5></span></strong>
+    
+	<a class="hidden-xs" title="Phát âm kiểu Anh-Mỹ" href="{{sound1}}">{{ sound1 }}</a>
+	<a class="hidden-xs" title="Phát âm kiểu Anh-Anh" href="{{sound2}}">{{ sound2 }}</a>
+    
+	
+    {% for item_glosbe in items %}
+	<strong><br /><span style="color: #298A08"><h5>{{ item_glosbe['first'] }}</h5></span></strong>
+	<strong><span style="color: #424242"><h5>{{ item_glosbe['second'] }}</h5></span></strong>
+    {% endfor %}
+  
+
+{% endblock %}
+

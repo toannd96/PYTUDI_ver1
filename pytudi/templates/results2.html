@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+{% block results %}
+
+    {% for item_glosbe in items %}
+	<strong><br /><span style="color: #298A08"><h5>{{ item_glosbe['first'] }}</h5></span></strong>
+	<strong><span style="color: #424242"><h5>{{ item_glosbe['second'] }}</h5></span></strong>
+    {% endfor %}
+    
+
+{% endblock %}
+

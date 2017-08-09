@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+<!-- index.html -->
+{% block title %}Từ điển Anh Việt, Việt Anh{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+
+                <div class="jumbotron">
+		    <div class="text-center"> 
+                        <strong><span style="color: #0174DF"><h1>PYTUDI</h1></span></strong>
+                        <span style="color: #8904B1"><h4>Dịch và tìm kiếm cặp câu song ngữ Anh Việt Anh</h4></span>
+                    </div>
+                </div>
+	
+         	<form method="post" action="/search">
+                    <div class="input-group input-group-lg">
+			
+                        <input style="color: #B43104" type="text" class="form-control" name="word" placeholder="Nhập từ hoặc cụm từ cần tra" required/>
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-search" ></span></button>
+                        </span>
+		
+                    </div>
+                </form>
+		<div class="text-left">
+                {% block results %}{% endblock %}
+		</div>
+                <div class="starter-template">
+                    <div class="footer">
+                            <p><span style="color: #084B8A">Copyright &copy; PYTUDI 2017</span></p>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+{% endblock %}
+
