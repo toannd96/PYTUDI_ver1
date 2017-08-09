@@ -1,2 +1,3 @@
 # PYTUDI
-Từ điển Anh - Việt // Việt - Anh viết bằng Flask
+Là một trang web từ điển nhỏ viết bằng Flask - microframework Python. Có chức năng tra từ và cụm từ Anh - Việt, Việt - Anh, kết quả trả về các cặp câu song ngữ ví dụ.
+
