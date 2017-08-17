@@ -3,22 +3,25 @@
 {% block title %}Từ điển Anh Việt, Việt Anh{% endblock %}
 
 {% block body %}
+
     <div class="container">
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-
-                <div class="jumbotron">
-		    <div class="text-center"> 
-                        <strong><span style="color: #0174DF"><h1>PYTUDI</h1></span></strong>
-                        <span style="color: #8904B1"><h4>Tra nhanh từ vựng và trả về các cặp câu song ngữ</h4></span>
-                    </div>
+            
+                <div class="page-header">
+                     
+                     <div class="text-center">
+                        <a href="https://www.facebook.com/toan.nguyen.31392410" class="fa fa-facebook-square fa-3x" title="Facebook" target="_blank"></a>
+                        <a href="https://github.com/dactoankmapydev" class="fa fa-github fa-3x" title="Github" target="_blank"></a>
+                        <a href="https://www.linkedin.com/in/%C4%91%E1%BA%AFc-to%C3%A0n-nguy%E1%BB%85n-a94b2a146/" title="Linkedin" class="fa fa-linkedin-square fa-3x" target="_blank"></a>
+                     </div>
                 </div>
 	
          	<form method="post" action="/search">
                     <div class="input-group input-group-lg">
 			
-                        <input style="color: #B43104" type="text" class="form-control" name="word" placeholder="Nhập từ hoặc cụm từ cần tra" required/>
+                        <input style="color: #DF7401" type="text" class="form-control" name="word" placeholder="Nhập từ hoặc cụm từ cần tra" required/>
                         <span class="input-group-btn">
                             <button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-search" ></span></button>
                         </span>
@@ -30,7 +33,7 @@
 		</div>
                 <div class="starter-template">
                     <div class="footer">
-                            <p><span style="color: #084B8A">Copyright &copy; PYTUDI 2017</span></p>
+                            <p><span style="color: #084B8A">Copyright &copy; <a href="https://pytudi.herokuapp.com/">pytudi.herokuapp.com 2017</a></span></p>
                     </div>
                 </div>
                 
