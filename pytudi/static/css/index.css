@@ -3,9 +3,16 @@ body {
   padding-top: 50px;
 }
 .starter-template {
-  padding: 40px 15px;
+  padding: 40px 20px;
   text-align: center;
 }
+.fa-facebook {
+  background: #3B5998;
+  color: white;
 }
-
+.fa-github {
+  background: white;
+  color: black;
+}
+}
 
