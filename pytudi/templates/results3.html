@@ -1,11 +1,11 @@
 {% extends "index.html" %}
 {% block results %}
 
-	<strong><br /><span style="color: #B43104"><h5>{{ word_laban }} :  {{ data_laban }}</h5></span></strong>
+	<strong><br /><span style="color: #DF7401"><h4>{{ word_laban }} :  {{ data_laban }}</h4></span></strong>
 	
     {% for item_glosbe in items %}
-	<strong><br /><span style="color: #298A08"><h5>{{ item_glosbe['first'] }}</h5></span></strong>
-	<strong><span style="color: #424242"><h5>{{ item_glosbe['second'] }}</h5></span></strong>
+	<strong><br /><span style="color: #298A08"><h4>{{ item_glosbe['first'] }}</h4></span></strong>
+	<strong><span style="color: #7E7E7E"><h4>{{ item_glosbe['second'] }}</h4></span></strong>
     {% endfor %}
     
 
