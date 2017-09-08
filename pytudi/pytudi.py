@@ -20,22 +20,39 @@ def search():
         if all(ord(char) < 128 for char in word) is True:
             if re.search(r"\s", word):
 
+                url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/en'
+                r = requests.get(url_tracau)
+                data_tracau = r.json()
+                items = data_tracau['sentences']
+                if len(items) > 0:
+                    for item_tracau in items:
+                        vi = (
+                            (item_tracau['fields']['vi']).replace(
+                                '<em>', '')).replace(
+                            '</em>', '')
+                        en = (
+                            (item_tracau['fields']['en']).replace(
+                                '<em>', '')).replace(
+                            '</em>', '')
+
                 url_glosbe = 'https://glosbe.com/gapi/tm?from=eng&dest=vi&format=json&phrase=' + \
                     word + '&page=1&pretty=true'
-                r = requests.get(url_glosbe)
-                data_glosbe = r.json()
-                items = data_glosbe['examples']
-                if len(items) > 0:
-                    for item_glosbe in items:
-                        item1 = item_glosbe['first']
-                        item2 = item_glosbe['second']
+                r1 = requests.get(url_glosbe)
+                data_glosbe = r1.json()
+                value_glosbe = data_glosbe['examples']
+                if len(value_glosbe) > 0:
+                    for item1 in value_glosbe:
+                        if((item1['author'] == 89985) or (item1['author'] == 94259)):
+                            eng = item1['first']
+                            vie = item1['second']
                 else:
                     return render_template('nodata.html')
                 return render_template(
                     'results2.html',
-                    item1=item_glosbe['first'],
-                    item2=item_glosbe['second'],
-                    items=items)
+                    vi=((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', ''),
+                    en=((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', ''),
+                    items=items, value_glosbe=value_glosbe,
+                    eng=item1['first'], vie=item1['second'], word=request.form['word'])
             else:
                 url_laban = requests.get(
                     'http://dict.laban.vn/find?type=&query=' + word).text
@@ -48,27 +65,35 @@ def search():
                     data_laban = soup.find(
                         "div", {"class": "green bold margin25 m-top15"}).text
 
-                    url1_laban = 'http://dict.laban.vn/ajax/getsound?accent=us&word=' + word
-                    req1_laban = requests.get(url1_laban)
-                    new_text1_laban = json.loads(req1_laban.text)
-                    sound1 = new_text1_laban["data"]
-
-                    url2_laban = 'http://dict.laban.vn/ajax/getsound?accent=uk&word=' + word
-                    req2_laban = requests.get(url2_laban)
-                    new_text2_laban = json.loads(req2_laban.text)
-                    sound2 = new_text2_laban["data"]
                 else:
                     return render_template('nodata.html')
 
+                url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/en'
+                r = requests.get(url_tracau)
+                data_tracau = r.json()
+                items = data_tracau['sentences']
+                if len(items) > 0:
+                    for item_tracau in items:
+                        vi = (
+                            (item_tracau['fields']['vi']).replace(
+                                '<em>', '')).replace(
+                            '</em>', '')
+                        en = (
+                            (item_tracau['fields']['en']).replace(
+                                '<em>', '')).replace(
+                            '</em>', '')
+
                 url_glosbe = 'https://glosbe.com/gapi/tm?from=eng&dest=vi&format=json&phrase=' + \
                     word + '&page=1&pretty=true'
-                r = requests.get(url_glosbe)
-                data_glosbe = r.json()
-                items = data_glosbe['examples']
-                if len(items) > 0:
-                    for item_glosbe in items:
-                        item1 = item_glosbe['first']
-                        item2 = item_glosbe['second']
+                r1 = requests.get(url_glosbe)
+                data_glosbe = r1.json()
+                value_glosbe = data_glosbe['examples']
+                if len(value_glosbe) > 0:
+                    for item1 in value_glosbe:
+                        if((item1['author'] == 89985) or (item1['author'] == 94259)):
+                            eng = item1['first']
+                            vie = item1['second']
+
                 else:
 
                     data_dict = requests.get(
@@ -88,17 +113,17 @@ def search():
                         'results4.html',
                         word_dict=word_dict,
                         word_dict_1=word_dict_1,
-                        word_dict_2=word_dict_2)
+                        word_dict_2=word_dict_2,
+                        word=request.form['word'])
 
                 return render_template(
                     'results1.html',
                     data_laban=data_laban,
                     word_laban=word_laban,
-                    sound1=sound1,
-                    sound2=sound2,
-                    item1=item_glosbe['first'],
-                    item2=item_glosbe['second'],
-                    items=items)
+                    vi=((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', ''),
+                    en=((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', ''),
+                    items=items, value_glosbe=value_glosbe,
+                    eng=item1['first'], vie=item1['second'], word=request.form['word'])
 
         else:
             url_laban = requests.get(
@@ -110,32 +135,67 @@ def search():
                 data_laban = soup.find(
                     "div", {"class": "green bold margin25 m-top15"}).text
             else:
+                url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/vi'
+                r = requests.get(url_tracau)
+                data_tracau = r.json()
+                items = data_tracau['sentences']
+                if len(items) > 0:
+                    for item_tracau in items:
+                        vi = (
+                            (item_tracau['fields']['vi']).replace(
+                                '<em>', '')).replace(
+                            '</em>', '')
+                        en = (
+                            (item_tracau['fields']['en']).replace(
+                                '<em>', '')).replace(
+                            '</em>', '')
+
                 url_glosbe = 'https://glosbe.com/gapi/tm?from=vi&dest=eng&format=json&phrase=' + \
                     word + '&page=1&pretty=true'
-                r = requests.get(url_glosbe)
-                data_glosbe = r.json()
-                items = data_glosbe['examples']
-                if len(items) > 0:
-                    for item_glosbe in items:
-                        item1 = item_glosbe['first']
-                        item2 = item_glosbe['second']
+                r1 = requests.get(url_glosbe)
+                data_glosbe = r1.json()
+                value_glosbe = data_glosbe['examples']
+                if len(value_glosbe) > 0:
+                    for item1 in value_glosbe:
+                        if((item1['author'] == 89985) or (item1['author'] == 94259)):
+                            eng = item1['first']
+                            vie = item1['second']
+
                 else:
                     return render_template('nodata.html')
                 return render_template(
-                    'results2.html',
-                    item1=item_glosbe['first'],
-                    item2=item_glosbe['second'],
-                    items=items)
+                    'results5.html',
+                    vi=((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', ''),
+                    en=((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', ''),
+                    items=items, value_glosbe=value_glosbe,
+                    eng=item1['first'], vie=item1['second'])
+
+            url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/vi'
+            r = requests.get(url_tracau)
+            data_tracau = r.json()
+            items = data_tracau['sentences']
+            if len(items) > 0:
+                for item_tracau in items:
+                    vi = (
+                        (item_tracau['fields']['vi']).replace(
+                            '<em>', '')).replace(
+                        '</em>', '')
+                    en = (
+                        (item_tracau['fields']['en']).replace(
+                            '<em>', '')).replace(
+                        '</em>', '')
 
             url_glosbe = 'https://glosbe.com/gapi/tm?from=vi&dest=eng&format=json&phrase=' + \
                 word + '&page=1&pretty=true'
-            r = requests.get(url_glosbe)
-            data_glosbe = r.json()
-            items = data_glosbe['examples']
-            if len(items) > 0:
-                for item_glosbe in items:
-                    item1 = item_glosbe['first']
-                    item2 = item_glosbe['second']
+            r1 = requests.get(url_glosbe)
+            data_glosbe = r1.json()
+            value_glosbe = data_glosbe['examples']
+            if len(value_glosbe) > 0:
+                for item1 in value_glosbe:
+                    if((item1['author'] == 89985) or (item1['author'] == 94259)):
+                        eng = item1['first']
+                        vie = item1['second']
+
             else:
                 return render_template('nodata.html')
 
@@ -143,9 +203,10 @@ def search():
                 'results3.html',
                 data_laban=data_laban,
                 word_laban=word_laban,
-                item1=item_glosbe['first'],
-                item2=item_glosbe['second'],
-                items=items)
+                vi=((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', ''),
+                en=((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', ''),
+                items=items, value_glosbe=value_glosbe,
+                eng=item1['first'], vie=item1['second'])
 
 
 if __name__ == "__main__":
