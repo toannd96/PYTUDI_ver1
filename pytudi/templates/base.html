@@ -4,30 +4,25 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='fonts/Flask.png') }}" />    
+    <meta name="description" content="Từ điển trực tuyến giúp bạn tra cứu nhanh chóng, chính xác từ hoặc cụm từ Anh - Việt , Việt -  Anh">
+    <meta name="keywords" content="tra từ, tra tu, tra câu, tra cau, tra cụm từ, tra cum tu, dictionary, từ điển, tu dien, tiếng anh, tiếng việt, english, vietnamese, ngoại ngữ, anh văn, Anh Việt, Việt Anh, từ vựng, dịch, dịch câu, dịch tiếng anh, dịch anh việt, dịch sang tiếng anh, dịch sang tiếng việt, từ điển dịch câu, từ điển anh việt, dịch chính xác, miễn phí, translate, online, free">
+    <meta name="author" content="Nguyễn Đắc Toàn"> 
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='fonts/abc.png') }}" />    
     <title>{% block title %}{% endblock %}</title>
 
-    <!-- Bootstrap -->
+   
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
 <body>
     {% block body %}{% endblock %}
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    
+    <script src="{{ url_for('static', filename='js/responsivevoice.js') }}"></script>	
+    <script src="{{ url_for('static', filename='js/jquery-compat-3.0.0-alpha1.js') }}"></script>
 </body>
 </html>
