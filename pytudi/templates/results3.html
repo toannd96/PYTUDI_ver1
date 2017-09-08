@@ -1,28 +1,17 @@
 {% extends "index.html" %}
-{% block results %}
-     
+{% block results %}     
         <strong><br /><button style="color: #6A0888" onclick="responsiveVoice.speak('{{data_laban}}');" type='submit' class="fa fa-volume-up"></button></strong>
-	<strong><span style="color: #DF7401"><h4>{{ word_laban }} :  {{ data_laban }}</h4></span></strong>
-        
-	
+	<strong><span style="color: #DF7401"><h4>{{ word_laban }} :  {{ data_laban }}</h4></span></strong>        	
     {% for item_tracau in items %}
         <strong><br /><button style="color: #6A0888" onclick="responsiveVoice.speak('{{((item_tracau['fields']['en']).replace('<em>','')).replace('</em>','')}}');" type='submit' class="fa fa-volume-up"></button></strong>
 	<strong><span style="color: #298A08"><h4>{{ ((item_tracau['fields']['en']).replace('<em>','')).replace('</em>','') }}</h4></span></strong>
-	<strong><span style="color: #7E7E7E"><h4>{{ ((item_tracau['fields']['vi']).replace('<em>','')).replace('</em>','') }}</h4></span></strong>
-
-        
-    {% endfor %}
-    
+	<strong><span style="color: #7E7E7E"><h4>{{ ((item_tracau['fields']['vi']).replace('<em>','')).replace('</em>','') }}</h4></span></strong>        
+    {% endfor %}    
     {% for item1 in value_glosbe %}
       {% if((item1['author'] == 89985) or (item1['author'] == 94259)) %}
-
         <strong><br /><button style="color: #6A0888" onclick="responsiveVoice.speak('{{item1['second'].replace('"','')}}');" type='submit' class="fa fa-volume-up"></button></strong>
-
-	<strong><span style="color: #298A08"><h4>{{ item1['second'] }}</h4></span></strong>
-         
+	<strong><span style="color: #298A08"><h4>{{ item1['second'] }}</h4></span></strong>         
 	<strong><span style="color: #7E7E7E"><h4>{{ item1['first'] }}</h4></span></strong>
-
       {% endif %}
     {% endfor %}
-
 {% endblock %}
