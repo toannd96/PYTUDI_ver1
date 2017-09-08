@@ -2,8 +2,9 @@
 <!-- index.html -->
 {% block title %}Từ điển Anh Việt, Việt Anh{% endblock %}
 
-{% block body %}
 
+{% block body %}
+   
     <div class="container">
         <div class="row">
             <div class="col-md-2"></div>
@@ -12,18 +13,20 @@
                 <div class="page-header">
                      
                      <div class="text-center">
-                        <a href="https://www.facebook.com/toan.nguyen.31392410" class="fa fa-facebook-square fa-3x" title="Facebook" target="_blank"></a>
-                        <a href="https://github.com/dactoankmapydev" class="fa fa-github fa-3x" title="Github" target="_blank"></a>
-                        <a href="https://www.linkedin.com/in/%C4%91%E1%BA%AFc-to%C3%A0n-nguy%E1%BB%85n-a94b2a146/" title="Linkedin" class="fa fa-linkedin-square fa-3x" target="_blank"></a>
+                        <a onclick="responsiveVoice.speak('Pi Tu Đi/viết tắt của Python từ điển, là công cụ giúp bạn tra  cứu nhanh chóng/ chính xác các từ/hoặc cụm từ Anh - Việt/Việt - Anh,kết quả trả về các cặp câu song ngữ,được viết bằng ngôn ngữ lập trình Python ,mọi ý kiến đóng góp xin gửi về liên kết trên ứng dụng,hoặc liên lạc với người phát triển qua liên kết facebook','Vietnamese Male');" type='submit' class="fa fa-question-circle-o fa-3x" title="Thông tin về PYTUDI" target="_blank"></a>
+                        <a href="https://www.facebook.com/toan.nguyen.31392410" class="fa fa-facebook-square fa-3x" title="Liên kết tới Facebook người phát triển" target="_blank"></a>
+                        <a href="https://github.com/dactoankmapydev" class="fa fa-github fa-3x" title="Mã nguồn ứng dụng" target="_blank"></a>
+                        <a href="https://www.linkedin.com/in/%C4%91%E1%BA%AFc-to%C3%A0n-nguy%E1%BB%85n-a94b2a146/" title="Liên kết tới Linkedin người phát triển" class="fa fa-linkedin-square fa-3x" target="_blank"></a>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLScF_3rAJcTGQmEN7cOQe_9uaUwCTMkO3jD3L6h28JnO9sw6Jw/viewform" title="Ý kiến phản hồi của bạn về PYTUDI" class="fa fa-envelope-o fa-3x" target="_blank"></a>
                      </div>
                 </div>
 	
-         	<form method="post" action="/search">
+         	<form method="post" action="/search" >
                     <div class="input-group input-group-lg">
 			
                         <input style="color: #DF7401" type="text" class="form-control" name="word" placeholder="Nhập từ hoặc cụm từ cần tra" required/>
                         <span class="input-group-btn">
-                            <button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-search" ></span></button>
+                            <button class="btn btn-success" type="submit" ><span class="glyphicon glyphicon-search" ></span></button>
                         </span>
 		
                     </div>
@@ -42,4 +45,3 @@
         </div>
     </div>
 {% endblock %}
-
