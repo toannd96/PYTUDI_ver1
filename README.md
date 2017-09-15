@@ -1,4 +1,4 @@
-# PYTUDI       [https://pytudi.herokuapp.com/](https://pytudi.herokuapp.com/)
-Vietnam-English dictionary - built with Flask and Requests.
+# PYTUDI    
+Vietnam-English/English-VietNam dictionary - built with Flask and Requests.
  
 
