@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, redirect, url_for, request, flash, g
+from flask import Flask, session, render_template, redirect, url_for, request, flash
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, ValidationError, SubmitField
