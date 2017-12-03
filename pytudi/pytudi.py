@@ -1,213 +1,208 @@
-from flask import Flask, render_template, request, url_for
-import requests
-import json
-import re
-from bs4 import BeautifulSoup
+from flask import Flask, session, render_template, redirect, url_for, request, flash, g
+from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField, ValidationError, SubmitField
+from wtforms.validators import InputRequired, Email, Length
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+from flask.ext.login import current_user
+from sqlalchemy.orm import relationship, backref
+import os
+
 
 app = Flask(__name__)
-app.config["DEBUG"] = True
+
+app.config['SECRET_KEY'] = 'thuctappythonvccloud'
+db_path = os.path.join(os.path.dirname(__file__), 'database.db')
+db_uri = 'sqlite:///{}'.format(db_path)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+Bootstrap(app)
+db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
-@app.route("/")
-def form():
+class User(UserMixin, db.Model):
+
+    __tablename__ = "user"
+    id = db.Column('id', db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True)
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+    book = db.relationship('Book', backref='owner', lazy='dynamic')
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+class LoginForm(FlaskForm):
+
+    username = StringField(
+        'username', validators=[
+            InputRequired(), Length(
+                min=5, max=20)])
+
+    password = PasswordField(
+        'password', validators=[
+            InputRequired(), Length(
+                min=5, max=20)])
+
+    remember = BooleanField('remember me')
+
+
+class RegisterForm(FlaskForm):
+
+    email = StringField(
+        'email', validators=[
+            InputRequired(), Email(
+                message='Invalid email'), Length(
+                max=50)])
+
+    username = StringField(
+        'username', validators=[
+            InputRequired(), Length(
+                min=4, max=15)])
+
+    password = PasswordField(
+        'password', validators=[
+            InputRequired(), Length(
+                min=8, max=80)])
+
+
+class Book(db.Model):
+
+    __tablename__ = "book"
+    id = db.Column('id', db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    author = db.Column(db.String(100))
+    price = db.Column(db.String(100))
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
+class CreateForm(FlaskForm):
+
+    title = StringField(
+        'title', validators=[
+            InputRequired(), Length(
+                min=1, max=50)])
+
+    author = StringField(
+        'author', validators=[
+            InputRequired(), Length(
+                min=3, max=50)])
+
+    price = StringField(
+        'price', validators=[
+            InputRequired(), Length(
+                min=4, max=10)])
+
+    submit = SubmitField('Submit')
+
+
+@app.route('/')
+def index():
     return render_template('index.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = User(
+            username=form.username.data,
+            email=form.email.data,
+            password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('You have successfully registered! You may now login.')
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
 
-@app.route("/search", methods=["GET", "POST"])
-def search():
-    if request.method == "POST":
-        word = request.form['word']
-        if all(ord(char) < 128 for char in word) is True:
-            if re.search(r"\s", word):
 
-                url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/en'
-                r = requests.get(url_tracau)
-                data_tracau = r.json()
-                items = data_tracau['sentences']
-                if len(items) > 0:
-                    for item_tracau in items:
-                        vi = (
-                            (item_tracau['fields']['vi']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
-                        en = (
-                            (item_tracau['fields']['en']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
-
-                url_glosbe = 'https://glosbe.com/gapi/tm?from=eng&dest=vi&format=json&phrase=' + \
-                    word + '&page=1&pretty=true'
-                r1 = requests.get(url_glosbe)
-                data_glosbe = r1.json()
-                value_glosbe = data_glosbe['examples']
-                if len(value_glosbe) > 0:
-                    for item1 in value_glosbe:
-                        if((item1['author'] == 89985) or (item1['author'] == 94259)):
-                            eng = item1['first']
-                            vie = item1['second']
-                else:
-                    return render_template('nodata.html')
-                return render_template(
-                    'results2.html',
-                    vi=((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', ''),
-                    en=((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', ''),
-                    items=items, value_glosbe=value_glosbe,
-                    eng=item1['first'], vie=item1['second'], word=request.form['word'])
-            else:
-                url_laban = requests.get(
-                    'http://dict.laban.vn/find?type=&query=' + word).text
-                soup = BeautifulSoup(url_laban, "html.parser")
-                word_laban = soup.find("h2", {"class": "fl"}).text
-                laban = soup.find("div",
-                                  {"class": "green bold margin25 m-top15"})
-                if laban is not None:
-
-                    data_laban = soup.find(
-                        "div", {"class": "green bold margin25 m-top15"}).text
-
-                else:
-                    return render_template('nodata.html')
-
-                url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/en'
-                r = requests.get(url_tracau)
-                data_tracau = r.json()
-                items = data_tracau['sentences']
-                if len(items) > 0:
-                    for item_tracau in items:
-                        vi = (
-                            (item_tracau['fields']['vi']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
-                        en = (
-                            (item_tracau['fields']['en']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
-
-                url_glosbe = 'https://glosbe.com/gapi/tm?from=eng&dest=vi&format=json&phrase=' + \
-                    word + '&page=1&pretty=true'
-                r1 = requests.get(url_glosbe)
-                data_glosbe = r1.json()
-                value_glosbe = data_glosbe['examples']
-                if len(value_glosbe) > 0:
-                    for item1 in value_glosbe:
-                        if((item1['author'] == 89985) or (item1['author'] == 94259)):
-                            eng = item1['first']
-                            vie = item1['second']
-
-                else:
-
-                    data_dict = requests.get(
-                        "https://www.dict.com/Anh-Viet/" + str(word) + '?').text
-                    soup = BeautifulSoup(data_dict, "html.parser")
-                    wdict = soup.find("span", {"class": "lex_ful_entr l1"})
-                    if wdict is not None:
-                        word_dict = soup.find(
-                            "span", {"class": "lex_ful_entr l1"}).text
-                        word_dict_1 = soup.find(
-                            "span", {"class": "lex_ful_pron"}).text
-                        word_dict_2 = soup.find(
-                            "span", {"class": "lex_ful_tran w l2"}).text
-                    else:
-                        return render_template('nodata.html')
-                    return render_template(
-                        'results4.html',
-                        word_dict=word_dict,
-                        word_dict_1=word_dict_1,
-                        word_dict_2=word_dict_2,
-                        word=request.form['word'])
-
-                return render_template(
-                    'results1.html',
-                    data_laban=data_laban,
-                    word_laban=word_laban,
-                    vi=((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', ''),
-                    en=((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', ''),
-                    items=items, value_glosbe=value_glosbe,
-                    eng=item1['first'], vie=item1['second'], word=request.form['word'])
-
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is not None and user.password == form.password.data:
+            success = login_user(user)
+            if success:
+                session['user_id'] = user.id
+                return redirect(url_for('dashboard'))
         else:
-            url_laban = requests.get(
-                'http://dict.laban.vn/find?type=&query=' + word).text
-            soup = BeautifulSoup(url_laban, "html.parser")
-            word_laban = soup.find("h2", {"class": "fl"}).text
-            laban = soup.find("div", {"class": "green bold margin25 m-top15"})
-            if laban is not None:
-                data_laban = soup.find(
-                    "div", {"class": "green bold margin25 m-top15"}).text
-            else:
-                url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/vi'
-                r = requests.get(url_tracau)
-                data_tracau = r.json()
-                items = data_tracau['sentences']
-                if len(items) > 0:
-                    for item_tracau in items:
-                        vi = (
-                            (item_tracau['fields']['vi']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
-                        en = (
-                            (item_tracau['fields']['en']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
+            flash('Invalid username or password.')
+    return render_template('login.html', form=form)
 
-                url_glosbe = 'https://glosbe.com/gapi/tm?from=vi&dest=eng&format=json&phrase=' + \
-                    word + '&page=1&pretty=true'
-                r1 = requests.get(url_glosbe)
-                data_glosbe = r1.json()
-                value_glosbe = data_glosbe['examples']
-                if len(value_glosbe) > 0:
-                    for item1 in value_glosbe:
-                        if((item1['author'] == 89985) or (item1['author'] == 94259)):
-                            eng = item1['first']
-                            vie = item1['second']
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have successfully been logged out.')
+    return redirect(url_for('login'))
 
-                else:
-                    return render_template('nodata.html')
-                return render_template(
-                    'results5.html',
-                    vi=((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', ''),
-                    en=((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', ''),
-                    items=items, value_glosbe=value_glosbe,
-                    eng=item1['first'], vie=item1['second'])
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
-            url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/vi'
-            r = requests.get(url_tracau)
-            data_tracau = r.json()
-            items = data_tracau['sentences']
-            if len(items) > 0:
-                for item_tracau in items:
-                    vi = (
-                        (item_tracau['fields']['vi']).replace(
-                            '<em>', '')).replace(
-                        '</em>', '')
-                    en = (
-                        (item_tracau['fields']['en']).replace(
-                            '<em>', '')).replace(
-                        '</em>', '')
+@app.route('/managers', methods=['GET', 'POST'])
+@login_required
+def show():
+    books = Book.query.join(User).filter(
+        Book.owner_id == session['user_id']).order_by(
+        Book.title, Book.author, Book.price).all()
+    return render_template(
+        'managers.html',
+        books=books)
 
-            url_glosbe = 'https://glosbe.com/gapi/tm?from=vi&dest=eng&format=json&phrase=' + \
-                word + '&page=1&pretty=true'
-            r1 = requests.get(url_glosbe)
-            data_glosbe = r1.json()
-            value_glosbe = data_glosbe['examples']
-            if len(value_glosbe) > 0:
-                for item1 in value_glosbe:
-                    if((item1['author'] == 89985) or (item1['author'] == 94259)):
-                        eng = item1['first']
-                        vie = item1['second']
+@app.route('/managers/create', methods=['GET', 'POST'])
+def create():
+    create = True
+    form = CreateForm()
+    if form.validate_on_submit():
+        new_book = Book(
+            title=form.title.data,
+            author=form.author.data,
+            price=form.price.data,
+            owner_id=session['user_id'])
+        db.session.add(new_book)
+        db.session.commit()
+        flash('You have successfully create a new book.')
+        return redirect(url_for('show'))
+    return render_template('manager.html', form=form, create=create)
 
-            else:
-                return render_template('nodata.html')
+@app.route("/managers/edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def edit(id):
+    create = False
+    book = Book.query.get_or_404(id)
+    form = CreateForm(obj=book)
+    if request.method == 'POST' and form.validate_on_submit():
+        book.title = form.title.data
+        book.author = form.author.data
+        book.price = form.price.data
+        db.session.add(book)
+        db.session.commit()
+        flash('You have successfully edit the book.')
+        return redirect(url_for('show'))
+    return render_template('manager.html', form=form, create=create, book=book)
 
-            return render_template(
-                'results3.html',
-                data_laban=data_laban,
-                word_laban=word_laban,
-                vi=((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', ''),
-                en=((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', ''),
-                items=items, value_glosbe=value_glosbe,
-                eng=item1['first'], vie=item1['second'])
+@app.route("/managers/delete", methods=["POST"])
+@login_required
+def delete():
+    title = request.form.get("title")
+    author = request.form.get("author")
+    price = request.form.get("price")
+    book = Book.query.filter_by(
+        title=title,
+        author=author,
+        price=price).first()
+    db.session.delete(book)
+    db.session.commit()
+    flash('You have successfully deleted the book.')
+    return redirect(url_for('show'))
 
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
+
