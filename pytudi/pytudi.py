@@ -17,7 +17,7 @@ def form():
 def search():
     if request.method == "POST":
         word = request.form['word']
-        if all(ord(char) < 128 for char in word) is True:
+        if all(ord(char) < 128 for char in word):
             if re.search(r"\s", word):
 
                 url_tracau = 'http://api.tracau.vn/WBBcwnwQpV89/s/' + word + '/en'
@@ -26,14 +26,8 @@ def search():
                 items = data_tracau['sentences']
                 if len(items) > 0:
                     for item_tracau in items:
-                        vi = (
-                            (item_tracau['fields']['vi']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
-                        en = (
-                            (item_tracau['fields']['en']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
+                        vi = ((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', '')
+                        en = ((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', '')
 
                 url_glosbe = 'https://glosbe.com/gapi/tm?from=eng&dest=vi&format=json&phrase=' + \
                     word + '&page=1&pretty=true'
@@ -74,14 +68,8 @@ def search():
                 items = data_tracau['sentences']
                 if len(items) > 0:
                     for item_tracau in items:
-                        vi = (
-                            (item_tracau['fields']['vi']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
-                        en = (
-                            (item_tracau['fields']['en']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
+                        vi = ((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', '')
+                        en = ((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', '')
 
                 url_glosbe = 'https://glosbe.com/gapi/tm?from=eng&dest=vi&format=json&phrase=' + \
                     word + '&page=1&pretty=true'
@@ -141,14 +129,8 @@ def search():
                 items = data_tracau['sentences']
                 if len(items) > 0:
                     for item_tracau in items:
-                        vi = (
-                            (item_tracau['fields']['vi']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
-                        en = (
-                            (item_tracau['fields']['en']).replace(
-                                '<em>', '')).replace(
-                            '</em>', '')
+                        vi = ((item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', '')
+                        en = ((item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', '')
 
                 url_glosbe = 'https://glosbe.com/gapi/tm?from=vi&dest=eng&format=json&phrase=' + \
                     word + '&page=1&pretty=true'
@@ -177,13 +159,8 @@ def search():
             if len(items) > 0:
                 for item_tracau in items:
                     vi = (
-                        (item_tracau['fields']['vi']).replace(
-                            '<em>', '')).replace(
-                        '</em>', '')
-                    en = (
-                        (item_tracau['fields']['en']).replace(
-                            '<em>', '')).replace(
-                        '</em>', '')
+                        (item_tracau['fields']['vi']).replace('<em>', '')).replace('</em>', '')
+                    en = (item_tracau['fields']['en']).replace('<em>', '')).replace('</em>', '')
 
             url_glosbe = 'https://glosbe.com/gapi/tm?from=vi&dest=eng&format=json&phrase=' + \
                 word + '&page=1&pretty=true'
@@ -210,4 +187,4 @@ def search():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run()
